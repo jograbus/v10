@@ -115,8 +115,8 @@ namespace all_tests
 		TEST_METHOD(test_05b)
 		{
 			std::vector<double> v{ 1.5, 8, -11.23, 0, 1e10, 1e10, 1e10, 0, 99 };
-			//riješeno
-			auto number_of_invalid = std::count_if(v.begin(), v.end(), [](double x) {return x == 1e10; });
+			//maknut višak kod rješenja
+			auto number_of_invalid = std::count(std::begin(v), std::end(v), 1e10);
 
 			Assert::AreEqual(3ll, number_of_invalid);
 		}
@@ -160,7 +160,7 @@ namespace all_tests
 			std::string s("neisporuka");
 			//change every vowel with x 
 			std::replace_if(s.begin(), s.end(), [](char c) {return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'; }, 'x');
-
+			
 			Assert::AreEqual("nxxspxrxkx", s.c_str());
 		}
 
@@ -179,9 +179,9 @@ namespace all_tests
 		{
 			std::string s("poliuretan");
 			//delete all vowels 
-			s.erase(std::remove_if(s.begin(), s.end(), [](char c) {
-				return std::string("aeiouAEIOU").find(c) != std::string::npos;
-				}), s.end());
+			//ujednaèena rješenja 7b i 8b
+			s.erase(std::remove_if(s.begin(), s.end(), [](char c) {return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';}), s.end());
+
 
 			Assert::AreEqual("plrtn", s.c_str());
 		}
@@ -238,10 +238,9 @@ namespace all_tests
 		{
 			std::vector<int> atp_points{ 8445, 7480, 6220, 5300, 5285 };
 			// the most interesting match is the one with the smallest difference
-			//riješeno
-			std::sort(atp_points.begin(), atp_points.end());
+			//riješeno bez sortiranja
 			std::adjacent_difference(atp_points.begin(), atp_points.end(), atp_points.begin());
-			auto smallest_difference = *std::min_element(atp_points.begin() + 1, atp_points.end());
+			auto smallest_difference = std::abs(*std::max_element(atp_points.begin() + 1, atp_points.end()));
 
 			Assert::AreEqual(15, smallest_difference);
 		}
